@@ -1,5 +1,6 @@
 
 module StompServer
+NULL_TERM = RUBY_VERSION =~ /1\.8/ ? 0 : "\0"
 class StompFrame
   attr_accessor :command, :headers, :body
   def initialize(command=nil, headers=nil, body=nil)
@@ -10,7 +11,7 @@ class StompFrame
  
   def to_s
     result = @command + "\n"
-    @headers['content-length'] = @body.size.to_s if @body.include?(0)
+    @headers['content-length'] = @body.size.to_s if @body.include?(NULL_TERM)
     @headers.each_pair do |key, value|
       result << "#{key}:#{value}\n"
     end
@@ -37,7 +38,7 @@ class StompFrameRecognizer
   end
   
   def parse_body(len)
-    raise RuntimeError.new("Invalid stompframe (missing null term)") unless @buffer[len] == 0
+    raise RuntimeError.new("Invalid stompframe (missing null term)") unless @buffer[len] == NULL_TERM
     @frame.body = @buffer[0...len]
     @buffer = @buffer[len+1..-1]
     @frames << @frame
@@ -51,7 +52,7 @@ class StompFrameRecognizer
   end
   
   def parse_text_body
-    if pos = @buffer.index(0)
+    if pos = @buffer.index(NULL_TERM)
       parse_body(pos)
     end
   end
