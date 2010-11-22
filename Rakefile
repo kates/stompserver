@@ -12,7 +12,7 @@ Hoe.new('stompserver', StompServer::VERSION) do |p|
   p.rubyforge_name = 'stompserver'
   p.summary = 'A very light messaging server'
   p.description = p.paragraphs_of('README.txt', 2..4).join("\n\n")
-  p.url = p.paragraphs_of('README.txt', 0).first.split(/\n/)[1..-1]
+  p.url = p.paragraphs_of('README.txt', 0).first.split(/\n/)[2..-1][0].strip
   p.changes = p.paragraphs_of('History.txt', 0..1).join("\n\n")
   p.email = [ "lionel-dev@bouton.name" ]
   p.author = [ "Lionel Bouton" ]
